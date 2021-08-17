@@ -3,7 +3,7 @@
 from logging import ERROR, DEBUG
 import discord
 from discord.ext import commands
-from helpers import log_event
+from helpers import log_event, log_event__command_begin, log_event__command_end
 import string
 from unicodedata import *
 
@@ -15,7 +15,7 @@ class Polling(commands.Cog):
 
     @commands.command()
     async def poll(self, context):
-        log_event(level=DEBUG, details="'$poll' command called")
+        log_event__command_begin('poll')
 
         msg = context.message
 
@@ -91,3 +91,4 @@ class Polling(commands.Cog):
             await msg.channel.send(
                 "Please make sure you are using the format **'$poll {<question>} [<itemA>] [<itemB>] [<itemC>]'**"
             )
+        log_event__command_end('poll')

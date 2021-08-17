@@ -5,14 +5,14 @@ from logging import ERROR, INFO, DEBUG
 
 from discord.ext import commands
 
-from helpers import log_event
+from helpers import log_event, log_event__command_begin, log_event__command_end
 
 
 class Games(commands.Cog):
 
     @commands.command()
     async def dice(self, context, number_of_sides: str):
-        log_event(level=DEBUG, details="'$dice' command called")
+        log_event__command_begin('die')
 
         message_instance = await context.message.channel.send(content='Rolling the die, clickety clack...')
         failed: bool = False
@@ -36,4 +36,4 @@ class Games(commands.Cog):
             output_message = f'The {number_of_sides} sided die landed on a **{str(random.randint(1, int(number_of_sides)))}**'
 
             await message_instance.edit(content=output_message)
-            log_event(level=DEBUG, details="command successfully, " + output_message)
+            log_event__command_end('die')

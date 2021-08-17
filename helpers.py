@@ -1,7 +1,7 @@
 import configparser
 import os
 import time
-from logging import getLevelName, _checkLevel
+from logging import getLevelName, _checkLevel, DEBUG
 from pathlib import Path
 
 
@@ -33,3 +33,11 @@ def log_event(level: int, details: str) -> None:
     with open(current_log_path, 'a+') as log_file: log_file.write(f'{log_entry}\n')
 
     print(log_entry)
+
+
+def log_event__command_begin(command_name: str) -> None:
+    log_event(DEBUG, f'command <{command_name}> has been called, execution has begun')
+
+
+def log_event__command_end(command_name: str) -> None:
+    log_event(DEBUG, f'command <{command_name}> execution has ended')
