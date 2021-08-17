@@ -43,7 +43,7 @@ class Polling(commands.Cog):
 
     @commands.command()
     async def poll(self, context):
-        log_event(event_level=DEBUG, event_details="'$poll' command called")
+        log_event(level=DEBUG, details="'$poll' command called")
 
         msg = context.message
 
@@ -88,7 +88,7 @@ class Polling(commands.Cog):
                     if not option[i] == "":
                         if len(option) > 20:
                             await msg.channel.send("Maximum of 20 options")
-                            log_event(event_level=ERROR, event_details="Command Failed, Too many Options")
+                            log_event(level=ERROR, details="Command Failed, Too many Options")
                             return
                         elif not i == len(option) - 1:
                             pollMessage = pollMessage + "\n\n" + self.emojiLetters[i] + " " + choice
@@ -105,9 +105,9 @@ class Polling(commands.Cog):
                         final_options.append(choice)
                         await pollMessage.add_reaction(self.emojiLetters[i])
                     i += 1
-                log_event(event_level=DEBUG, event_details="Command Succesfull")
+                log_event(level=DEBUG, details="Command Succesfull")
             except Exception as error:
-                log_event(event_level=ERROR, event_details="Command Failed, Incorrect Format [{error}]")
+                log_event(level=ERROR, details="Command Failed, Incorrect Format [{error}]")
                 await msg.channel.send(
                     "Please make sure you are using the format **'$poll {<question>} [<itemA>] [<itemB>] [<itemC>]'**")
 
