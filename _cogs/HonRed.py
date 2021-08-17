@@ -25,7 +25,7 @@ class HonRed(commands.Cog):
 
     @commands.command()
     async def honstatus(self, context):
-        log_event(event_type=DEBUG, event_details="'$honstatus' command called")
+        log_event(event_level=DEBUG, event_details="'$honstatus' command called")
 
         msg = context.message
 
@@ -50,7 +50,7 @@ class HonRed(commands.Cog):
         if not found:
             await msgOut.edit(
                 content="I couldn't find you! You're not on my spreadsheet (if this is the case, contact a premier) or you got your username wrong!")
-            log_event(event_type=ERROR, event_details="Command failed, couldnt find user")
+            log_event(event_level=ERROR, event_details="Command failed, couldnt find user")
 
         if found:
             ## GET CELL VALUES (indices start at 1)
@@ -59,7 +59,7 @@ class HonRed(commands.Cog):
             Voteing = self.honSheetMain.cell(userRow + 1, 5).value
             Test = self.honSheetMain.cell(userRow + 1, 6).value
 
-            log_event(event_type=DEBUG, event_details="Collected Cell Values")
+            log_event(event_level=DEBUG, event_details="Collected Cell Values")
 
             ## FORMAT MESSAGE
 
@@ -93,7 +93,7 @@ class HonRed(commands.Cog):
 
             ## SEND MESSAGE
             await msgOut.edit(content='', embed=embed)
-            log_event(event_type=DEBUG, event_details="Command Succesfull")
+            log_event(event_level=DEBUG, event_details="Command Succesfull")
 
     # COMMAND: $honupdate <username> <requirement>
 
@@ -129,7 +129,7 @@ class HonRed(commands.Cog):
             if not found:
                 await msgOut.edit(
                     content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
-                log_event(event_type=ERROR, event_details="Command failed, couldnt find user")
+                log_event(event_level=ERROR, event_details="Command failed, couldnt find user")
 
             if found:
                 ## SET CELLS
@@ -141,14 +141,14 @@ class HonRed(commands.Cog):
                 ## SEND CONFIRMATION
                 await msgOut.edit(
                     content="**The update request has been recieved**, the Minister for Personell will update the spreadhseet soon!")
-                log_event(event_type=DEBUG, event_details="Command Succesfull")
+                log_event(event_level=DEBUG, event_details="Command Succesfull")
 
     # COMMAND: $honregister <username>
 
     @commands.command()
     async def honregister(self, context):
 
-        log_event(event_type=DEBUG, event_details="'$honregister' command called")
+        log_event(event_level=DEBUG, event_details="'$honregister' command called")
 
         msg = context.message
 
@@ -174,7 +174,7 @@ class HonRed(commands.Cog):
         if not found:
             await msgOut.edit(
                 content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
-            log_event(event_type=ERROR, event_details="Command failed, couldnt find user")
+            log_event(event_level=ERROR, event_details="Command failed, couldnt find user")
 
         if found:
             ## SET CELLS
@@ -184,7 +184,7 @@ class HonRed(commands.Cog):
             ## SEND CONFIRMATION
             await msgOut.edit(
                 content="**Your registration request has been recieved**, the Minsister for Personell will add you to the spreadsheet soon!")
-            log_event(event_type=DEBUG, event_details="Command Succesfull")
+            log_event(event_level=DEBUG, event_details="Command Succesfull")
 
 
 def setup(client):

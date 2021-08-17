@@ -22,7 +22,7 @@ class Moderation(commands.Cog):
     @commands.command()
     async def report(self, context):
 
-        log_event(event_type=DEBUG, event_details="'$report' command called")
+        log_event(event_level=DEBUG, event_details="'$report' command called")
 
         dateObj = datetime.datetime.now()
         dateStr = dateObj.strftime("%a %d %b - %H:%M ") + "GMT"
@@ -52,7 +52,7 @@ class Moderation(commands.Cog):
 
         await reportChnl.send(embed=embed)
 
-        log_event(event_type=DEBUG, event_details="Command Succesfull")
+        log_event(event_level=DEBUG, event_details="Command Succesfull")
 
     # COMMAND: $ilence <member mention>
 
@@ -60,7 +60,7 @@ class Moderation(commands.Cog):
     @commands.command()
     async def ilence(self, context):
 
-        log_event(event_type=DEBUG, event_details="'$ilence' command called")
+        log_event(event_level=DEBUG, event_details="'$ilence' command called")
 
         toMute = context.message.mentions[0]
         reasonStr = "Muted by" + context.message.author.display_name
@@ -68,10 +68,10 @@ class Moderation(commands.Cog):
         muteRole = context.message.guild.get_role(self.muteRoleID)
 
         if muteRole == None:
-            log_event(event_type=ERROR, event_details="ERROR: Mute role not found, check ID is correct")
+            log_event(event_level=ERROR, event_details="ERROR: Mute role not found, check ID is correct")
         else:
             await toMute.add_roles(muteRole, reason=reasonStr)
-            log_event(event_type=DEBUG, event_details="Command Succesfull")
+            log_event(event_level=DEBUG, event_details="Command Succesfull")
             await context.message.channel.send("```**MUTED** {} indefinetly!```".format(toMute.display_name))
 
 

@@ -16,7 +16,7 @@ class Help(commands.Cog):
         self.helpContents = f.read()
 
         if self.helpContents == "":
-            log_event(event_type=INFO, event_details="No Help File Found. Created Empty One")
+            log_event(event_level=INFO, event_details="No Help File Found. Created Empty One")
 
         f.close()
 
@@ -27,11 +27,11 @@ class Help(commands.Cog):
 
     @commands.command()
     async def help(self, context):
-        log_event(event_type=DEBUG, event_details="'$help' command called")
+        log_event(event_level=DEBUG, event_details="'$help' command called")
 
         await context.message.channel.send(self.helpContents)
 
-        log_event(event_type=DEBUG, event_details="Command Succesfull")
+        log_event(event_level=DEBUG, event_details="Command Succesfull")
 
 
 def setup(client):
