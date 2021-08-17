@@ -9,40 +9,30 @@ from helpers import log_event
 
 class Games(commands.Cog):
 
-    def __init__(self, client, sheets):
-        self.client = client
-        self.gsheet = sheets
-
-    # COMMAND: $dice <sides>
-
     @commands.command()
-    async def dice(self, context):
+    async def dice(self, context, number_of_sides: str):
         log_event(txt="'$dice' command called")
 
-        msgOut = await context.message.channel.send(content='Rolling the Die, Clickety Clack...')
-        failed = 0
+        message_instance = await context.message.channel.send(content='Rolling the die, clickety clack...')
+        failed: bool = False
 
-        try:
-            input = context.message.content.split(" ")[1].strip()
-            max = int(input)
+        if not number_of_sides.isdigit():
+            log_event(txt="FAILED: the <sides> parameter is not an integer")
+            await message_instance.edit(content="the <sides> parameter must be an integer")
+            failed = True
 
-        except Exception as error:
-            failed = 1
-            log_event(txt="FAILED: <sides> Parameter Not an Integer [{}]".format(error))
-            await msgOut.edit(content="<sides> Parameter Must be an Integer")
+        if int(number_of_sides) > 900:
+            log_event(txt="FAILED: the <sides> parameter is above the bounds of <900>")
+            await message_instance.edit(content="the <sides> parameter must be less than or equal to 900")
+            failed = True
 
-        if len(str(max)) > 900:
-            failed = 1
-            log_event(txt="FAILED: <sides> Parameter Too Big")
-            await msgOut.edit(content="<sides> Parameter Must be smaller than 900 characters")
+        if int(number_of_sides) <= 0:
+            log_event(txt="FAILED: the <sides> parameter is below the bounds of <0>")
+            await message_instance.edit(content="the <sides> parameter must be greater than or equal to 0")
+            failed = False
 
-        if max < 1:
-            failed = 0
-            log_event(txt="FAILED: <sides> Parameter Too Small")
-            await msgOut.edit(content="<sides> Parameter Must be Larger than 0")
+        if failed is False:
+            output_message = f'The {number_of_sides} sided die landed on a **{str(random.randint(1, int(number_of_sides)))}**'
 
-        if failed == 0:
-            out = "The " + input + " sided die Landed On a **" + str(random.randint(1, max)) + "**"
-
-            await msgOut.edit(content=out)
-            log_event(txt="Command Succesfull, " + out)
+            await message_instance.edit(content=output_message)
+            log_event(txt="command successfully, " + output_message)
