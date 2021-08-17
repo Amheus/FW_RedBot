@@ -1,181 +1,189 @@
 ## HonRed Commands for Red Bot
 
 import datetime
+
 import discord
 from discord.ext import commands
 
+
 class HonRed(commands.Cog):
-	
-	def __init__(self, client):
-		self.client = client
-	
-	def set_refs(self, logger, sheets):
-		self.logs = logger
-		self.gsheet = sheets
-		
-		self.honSheetMain = self.gsheet.open("Honarary Red Tracking").worksheet("BOT_DATA")
-		self.honRegisterSheetMain = self.gsheet.open("Honarary Red Tracking").worksheet("Registration")
-		self.honSubmissionSheetMain = self.gsheet.open("Honarary Red Tracking").worksheet("Submissions")
-		
-# COMMAND: $honstatus <username>
 
-	@commands.command()
-	async def honstatus(self, context):
-		self.logs.log("'$honstatus' command called")
+    def __init__(self, client):
+        self.client = client
 
-		msg = context.message
+    def set_refs(self, logger, sheets):
+        self.logs = logger
+        self.gsheet = sheets
 
-		msgOut = await msg.channel.send(content='Give me a second, looking you up...')
+        self.honSheetMain = self.gsheet.open("Honarary Red Tracking").worksheet("BOT_DATA")
+        self.honRegisterSheetMain = self.gsheet.open("Honarary Red Tracking").worksheet("Registration")
+        self.honSubmissionSheetMain = self.gsheet.open("Honarary Red Tracking").worksheet("Submissions")
 
-		# Get Username
-		username = msg.content.split(" ")[1].strip()
+    # COMMAND: $honstatus <username>
 
-		sheetUsernames = self.honSheetMain.col_values(1)
+    @commands.command()
+    async def honstatus(self, context):
+        self.logs.log("'$honstatus' command called")
 
-		found = False
+        msg = context.message
 
-		for i in range(len(sheetUsernames)):
-			if sheetUsernames[i].strip() == username:
-				await msgOut.edit(content='Found you in the spreadsheet, almost there...')
-				userRow = i
-				found = True
-				break
-		if username == "Username":
-			found = False
+        msgOut = await msg.channel.send(content='Give me a second, looking you up...')
 
-		if not found:
-			await msgOut.edit(content="I couldn't find you! You're not on my spreadsheet (if this is the case, contact a premier) or you got your username wrong!")
-			self.logs.log("Command failed, couldnt find user")	
-			
-		if found:
-			## GET CELL VALUES (indices start at 1)
-			Lore = self.honSheetMain.cell(userRow+1, 2).value
-			RedOC = self.honSheetMain.cell(userRow+1, 3).value
-			Voteing = self.honSheetMain.cell(userRow+1, 5).value
-			Test = self.honSheetMain.cell(userRow+1, 6).value
+        # Get Username
+        username = msg.content.split(" ")[1].strip()
 
-			self.logs.log("Collected Cell Values")
+        sheetUsernames = self.honSheetMain.col_values(1)
 
-			## FORMAT MESSAGE
+        found = False
 
-			# Lore Contribution
-			if Lore == "1":
-				msg1 = "Completed"
-			else:
-				msg1 = "Not Yet Submitted"
+        for i in range(len(sheetUsernames)):
+            if sheetUsernames[i].strip() == username:
+                await msgOut.edit(content='Found you in the spreadsheet, almost there...')
+                userRow = i
+                found = True
+                break
+        if username == "Username":
+            found = False
 
-			# Amount of Red OC
-			msg2 = RedOC
+        if not found:
+            await msgOut.edit(
+                content="I couldn't find you! You're not on my spreadsheet (if this is the case, contact a premier) or you got your username wrong!")
+            self.logs.log("Command failed, couldnt find user")
 
-			# Voting on Posts
-			if Voteing == "1":
-				msg3 = "Completed"
-			else:
-				msg3 = "Evidence Not Yet Submitted"
+        if found:
+            ## GET CELL VALUES (indices start at 1)
+            Lore = self.honSheetMain.cell(userRow + 1, 2).value
+            RedOC = self.honSheetMain.cell(userRow + 1, 3).value
+            Voteing = self.honSheetMain.cell(userRow + 1, 5).value
+            Test = self.honSheetMain.cell(userRow + 1, 6).value
 
-			# The Test
-			if Test == "1":
-				msg4 = "Completed"
-			else:
-				msg4 = "Not Yet Passed"
+            self.logs.log("Collected Cell Values")
 
-			## SETUP EMBED
-			embed = discord.Embed(title="**Honarary Red Progression**: " + username, color=0x8c0808)
-			embed.add_field(name="Lore Contribution", value=msg1, inline=False)
-			embed.add_field(name="Amount of Red OC Created", value=msg2, inline=False)
-			embed.add_field(name="Voting on Requested Posts", value=msg3, inline=False)
-			embed.add_field(name="The *TEST*", value=msg4, inline=False)
+            ## FORMAT MESSAGE
 
-			## SEND MESSAGE
-			await msgOut.edit(content='',embed=embed)
-			self.logs.log("Command Succesfull")
+            # Lore Contribution
+            if Lore == "1":
+                msg1 = "Completed"
+            else:
+                msg1 = "Not Yet Submitted"
 
-# COMMAND: $honupdate <username> <requirement>
+            # Amount of Red OC
+            msg2 = RedOC
 
-	@commands.command()
-	async def honupdate(self, context):
+            # Voting on Posts
+            if Voteing == "1":
+                msg3 = "Completed"
+            else:
+                msg3 = "Evidence Not Yet Submitted"
 
-		msg = context.message
-		
-		if msg.channel.name == "honorary-red-logging":
-			self.logs.log("'$honupdate' command called")	
-			
-			msgOut = await msg.channel.send('Adding to update list...')
-				
-			# Get Username
-			username = msg.content.split(" ")[1].strip()
-			date = str(datetime.datetime.now().month) + "/" + str(datetime.datetime.now().day)
-			premier = msg.author.nick
-			requirement = msg.content.split(" ")[2].strip()
+            # The Test
+            if Test == "1":
+                msg4 = "Completed"
+            else:
+                msg4 = "Not Yet Passed"
 
-			sheetUsernames = self.honSubmissionSheetMain.col_values(1)
-			
-			# Get Gap in Spreadsheet
-			found = False
+            ## SETUP EMBED
+            embed = discord.Embed(title="**Honarary Red Progression**: " + username, color=0x8c0808)
+            embed.add_field(name="Lore Contribution", value=msg1, inline=False)
+            embed.add_field(name="Amount of Red OC Created", value=msg2, inline=False)
+            embed.add_field(name="Voting on Requested Posts", value=msg3, inline=False)
+            embed.add_field(name="The *TEST*", value=msg4, inline=False)
 
-			for i in range(len(sheetUsernames)):
-				if sheetUsernames[i] == "-":
-					userRow = i
-					found = True
-					break
-			if username == "Username":
-				found = False
+            ## SEND MESSAGE
+            await msgOut.edit(content='', embed=embed)
+            self.logs.log("Command Succesfull")
 
-			if not found:
-				await msgOut.edit(content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
-				self.logs.log("Command failed, couldnt find user")	
-	  
-			if found:
-				## SET CELLS
-				self.honSubmissionSheetMain.update_cell(userRow+1, 1, username)
-				self.honSubmissionSheetMain.update_cell(userRow+1, 2, premier)
-				self.honSubmissionSheetMain.update_cell(userRow+1, 3, requirement)
-				self.honSubmissionSheetMain.update_cell(userRow+1, 4, date)
+    # COMMAND: $honupdate <username> <requirement>
 
-				## SEND CONFIRMATION
-				await msgOut.edit(content="**The update request has been recieved**, the Minister for Personell will update the spreadhseet soon!")
-				self.logs.log("Command Succesfull")
-				
-# COMMAND: $honregister <username>
+    @commands.command()
+    async def honupdate(self, context):
 
-	@commands.command()
-	async def honregister(self, context):
-		
-		self.logs.log("'$honregister' command called")	
+        msg = context.message
 
-		msg = context.message
-		
-		msgOut = await msg.channel.send('Informing the premiers, a crimson courier has been dispatched...')
+        if msg.channel.name == "honorary-red-logging":
+            self.logs.log("'$honupdate' command called")
 
-		# Get Username
-		username = msg.content.split(" ")[1].strip()
-		date = str(datetime.datetime.now().month) + "/" + str(datetime.datetime.now().day)
+            msgOut = await msg.channel.send('Adding to update list...')
 
-		sheetUsernames = self.honRegisterSheetMain.col_values(1)
+            # Get Username
+            username = msg.content.split(" ")[1].strip()
+            date = str(datetime.datetime.now().month) + "/" + str(datetime.datetime.now().day)
+            premier = msg.author.nick
+            requirement = msg.content.split(" ")[2].strip()
 
-		# Get Gap in Spreadsheet
-		found = False
+            sheetUsernames = self.honSubmissionSheetMain.col_values(1)
 
-		for i in range(len(sheetUsernames)):
-			if sheetUsernames[i] == "-":
-				userRow = i
-				found = True
-				break
-		if username == "Username":
-			found = False
+            # Get Gap in Spreadsheet
+            found = False
 
-		if not found:
-			await msgOut.edit(content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
-			self.logs.log("Command failed, couldnt find user")	
-			
-		if found:
-			## SET CELLS
-			self.honRegisterSheetMain.update_cell(userRow+1, 1, username)
-			self.honRegisterSheetMain.update_cell(userRow+1, 2, date)
+            for i in range(len(sheetUsernames)):
+                if sheetUsernames[i] == "-":
+                    userRow = i
+                    found = True
+                    break
+            if username == "Username":
+                found = False
 
-			## SEND CONFIRMATION
-			await msgOut.edit(content="**Your registration request has been recieved**, the Minsister for Personell will add you to the spreadsheet soon!")
-			self.logs.log("Command Succesfull")
-			
+            if not found:
+                await msgOut.edit(
+                    content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
+                self.logs.log("Command failed, couldnt find user")
+
+            if found:
+                ## SET CELLS
+                self.honSubmissionSheetMain.update_cell(userRow + 1, 1, username)
+                self.honSubmissionSheetMain.update_cell(userRow + 1, 2, premier)
+                self.honSubmissionSheetMain.update_cell(userRow + 1, 3, requirement)
+                self.honSubmissionSheetMain.update_cell(userRow + 1, 4, date)
+
+                ## SEND CONFIRMATION
+                await msgOut.edit(
+                    content="**The update request has been recieved**, the Minister for Personell will update the spreadhseet soon!")
+                self.logs.log("Command Succesfull")
+
+    # COMMAND: $honregister <username>
+
+    @commands.command()
+    async def honregister(self, context):
+
+        self.logs.log("'$honregister' command called")
+
+        msg = context.message
+
+        msgOut = await msg.channel.send('Informing the premiers, a crimson courier has been dispatched...')
+
+        # Get Username
+        username = msg.content.split(" ")[1].strip()
+        date = str(datetime.datetime.now().month) + "/" + str(datetime.datetime.now().day)
+
+        sheetUsernames = self.honRegisterSheetMain.col_values(1)
+
+        # Get Gap in Spreadsheet
+        found = False
+
+        for i in range(len(sheetUsernames)):
+            if sheetUsernames[i] == "-":
+                userRow = i
+                found = True
+                break
+        if username == "Username":
+            found = False
+
+        if not found:
+            await msgOut.edit(
+                content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
+            self.logs.log("Command failed, couldnt find user")
+
+        if found:
+            ## SET CELLS
+            self.honRegisterSheetMain.update_cell(userRow + 1, 1, username)
+            self.honRegisterSheetMain.update_cell(userRow + 1, 2, date)
+
+            ## SEND CONFIRMATION
+            await msgOut.edit(
+                content="**Your registration request has been recieved**, the Minsister for Personell will add you to the spreadsheet soon!")
+            self.logs.log("Command Succesfull")
+
+
 def setup(client):
-	client.add_cog(HonRed(client))
+    client.add_cog(HonRed(client))

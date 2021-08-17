@@ -1,12 +1,13 @@
 import configparser
-import os
-import discord
-from logger import logger
 import logging
+import os
 import time
+
 import gspread
 from discord.ext import commands
 from oauth2client.service_account import ServiceAccountCredentials
+
+from logger import logger
 
 logs = logger()
 logs.log("---------------------- Starting Up ----------------------")
