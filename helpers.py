@@ -1,10 +1,10 @@
-
+import configparser
 import os
 import time
+from logging import getLevelName, _checkLevel
 from pathlib import Path
 
 CURRENT_LOG_PATH = f'logs/{str(time.strftime("%Y%m%d-%H%M%S"))}.log'
-MAX_SIZE = 500  # max size of log files before a new one is created, in MB
 
 
 def convert_bytes_to_mb( num):
@@ -19,18 +19,23 @@ def file_size(filePath):
     return 0
 
 
-def log_event(txt: str):
+def log_event(event_type: int, event_details: str):
+    with open("config.ini") as file:
+        config = configparser.RawConfigParser(allow_no_value=True)
+        config.read_string(file.read())
+        if event_type < _checkLevel(config.get('logging', 'level')):
+            return
+
     global CURRENT_LOG_PATH
-    global MAX_SIZE
 
     Path("logs").mkdir(exist_ok=True)
 
     formatted_datetime = str(time.strftime("%Y%m%d-%H%M%S"))
 
-    if file_size(CURRENT_LOG_PATH) > MAX_SIZE:
+    if file_size(CURRENT_LOG_PATH) > config.getint('logging', 'maximum-file-size'):
         CURRENT_LOG_PATH = f'logs/{formatted_datetime}.log'
 
-    log_entry = f'{formatted_datetime} >>> {txt}'
+    log_entry = f'{formatted_datetime} >>> {getLevelName(event_type)} >>> {event_details}'
 
     with open(CURRENT_LOG_PATH, 'a+') as log_file: log_file.write(f'{log_entry}\n')
 

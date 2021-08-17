@@ -1,4 +1,5 @@
 ## Poll Commands for Red Bot
+from logging import INFO, ERROR, DEBUG
 
 import discord
 from discord.ext import commands
@@ -42,7 +43,7 @@ class Polling(commands.Cog):
 
     @commands.command()
     async def poll(self, context):
-        log_event(txt="'$poll' command called")
+        log_event(event_type=DEBUG, event_details="'$poll' command called")
 
         msg = context.message
 
@@ -87,7 +88,7 @@ class Polling(commands.Cog):
                     if not option[i] == "":
                         if len(option) > 20:
                             await msg.channel.send("Maximum of 20 options")
-                            log_event(txt="Command Failed, Too many Options")
+                            log_event(event_type=ERROR, event_details="Command Failed, Too many Options")
                             return
                         elif not i == len(option) - 1:
                             pollMessage = pollMessage + "\n\n" + self.emojiLetters[i] + " " + choice
@@ -104,9 +105,9 @@ class Polling(commands.Cog):
                         final_options.append(choice)
                         await pollMessage.add_reaction(self.emojiLetters[i])
                     i += 1
-                log_event(txt="Command Succesfull")
+                log_event(event_type=DEBUG, event_details="Command Succesfull")
             except Exception as error:
-                log_event(txt="Command Failed, Incorrect Format [{error}]")
+                log_event(event_type=ERROR, event_details="Command Failed, Incorrect Format [{error}]")
                 await msg.channel.send(
                     "Please make sure you are using the format **'$poll {<question>} [<itemA>] [<itemB>] [<itemC>]'**")
 

@@ -1,2 +1,11 @@
 [discord]
-token=
+token =
+
+[logging]
+maximum-file-size=500
+# DEBUG -> logs everything, generally not a good idea to run this in production
+# INFO  -> logs general events
+# ERROR -> only logs errors
+level=DEBUG
+;level=INFO
+;level=ERROR

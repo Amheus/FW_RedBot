@@ -1,6 +1,7 @@
 ## Comradeship Commands for Red Bot
 
 import datetime
+from logging import ERROR, DEBUG
 
 import discord
 from discord.ext import commands
@@ -37,7 +38,7 @@ class ComradeshipMKII(commands.Cog):
 
     @commands.command()
     async def comradeshiplevel(self, context):
-        log_event(txt="'$comradeshiplevel2' command called")
+        log_event(event_type=DEBUG, event_details="'$comradeshiplevel2' command called")
 
         msg = context.message
 
@@ -62,7 +63,7 @@ class ComradeshipMKII(commands.Cog):
         if not user_found:
             await msg_out.edit(
                 content="**I couldn't find you!**\nYou're not on my spreadsheet (if this is the case, you need to register for comradeship) or you got your username wrong!")
-            log_event(txt="Command failed, couldn't find username")
+            log_event(event_type=ERROR, event_details="Command failed, couldn't find username")
 
         if user_found:
             ## GET CELL VALUES (indices start at 1)
@@ -84,14 +85,14 @@ class ComradeshipMKII(commands.Cog):
 
             ## SEND MESSAGE
             await msg_out.edit(content='', embed=embed)
-            log_event(txt="Command Succesfull")
+            log_event(event_type=DEBUG, event_details="Command Succesfull")
 
     # COMMAND: $comradeship_request <description>
 
     @commands.command()
     async def comradeship_request(self, context):
 
-        log_event(txt="'$comradeship_request' command called")
+        log_event(event_type=DEBUG, event_details="'$comradeship_request' command called")
 
         dateObj = datetime.datetime.now()
         dateStr = dateObj.strftime("%a %d %b - %H:%M ") + "GMT"
@@ -112,14 +113,14 @@ class ComradeshipMKII(commands.Cog):
         await requestChnl.send(embed=embed)
         await context.message.channel.send('Sent the request, a Premier will get you updated ASAP')
 
-        log_event(txt="Command Succesfull")
+        log_event(event_type=DEBUG, event_details="Command Succesfull")
 
     # COMMAND: $comradeshipevent <username> <description> <evidence>
 
     @has_role("Premier")
     @commands.command()
     async def comradeshipevent(self, context):
-        log_event(txt="'$comradeshipevent2' command called")
+        log_event(event_type=DEBUG, event_details="'$comradeshipevent2' command called")
 
         msg = context.message
 
@@ -146,7 +147,7 @@ class ComradeshipMKII(commands.Cog):
         if not user_found:
             await msg_out.edit(
                 content="**I couldn't find you!**\nYou're not on my spreadsheet (if this is the case, you need to register for comradeship) or you got your username wrong!")
-            log_event(txt="Command failed, couldnt find username")
+            log_event(event_type=ERROR, event_details="Command failed, couldnt find username")
 
         chk_event = False
         for i in self.cmrd_events:
@@ -157,7 +158,7 @@ class ComradeshipMKII(commands.Cog):
         if not chk_event:
             await msg_out.edit(
                 content="**I don't think that is an event!**\nThat event was unexpected, did you get the spelling right?")
-            log_event(txt="Command failed, unexpected event")
+            log_event(event_type=ERROR, event_details="Command failed, unexpected event")
 
         if user_found and chk_event:
             ## UPDATE POINTS
@@ -177,7 +178,7 @@ class ComradeshipMKII(commands.Cog):
 
             else:
                 await msg_out.edit(content="**Something didn't work!!!**\n Go ree at Miner not me!")
-                log_event(txt="Command failed, issue while adding points")
+                log_event(event_type=ERROR, event_details="Command failed, issue while adding points")
 
             if success:
                 # ADD LOG
@@ -190,14 +191,14 @@ class ComradeshipMKII(commands.Cog):
                 ## SEND CONFIRMATION
                 await msg_out.edit(content="**Your submission has been recieved**\n Your points have been updated!")
 
-                log_event(txt="Command Succesfull")
+                log_event(event_type=DEBUG, event_details="Command Succesfull")
 
     # COMMAND: $comradeshipevent <username> <description> <evidence>
 
     @has_role("Premier")
     @commands.command()
     async def comradeshipregister(self, context):
-        log_event(txt="'$comradeshipregister2' command called")
+        log_event(event_type=DEBUG, event_details="'$comradeshipregister2' command called")
 
         msg = context.message
 

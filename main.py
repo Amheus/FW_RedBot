@@ -10,7 +10,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from cogs.games import Games
 from helpers import log_event
 
-log_event(txt="---------------------- Starting Up ----------------------")
+log_event(event_type=logging.INFO, event_details="---------------------- Starting Up ----------------------")
 
 # Gspread variables
 scope = ['https://spreadsheets.google.com/feeds',
@@ -32,10 +32,10 @@ def setup_gSpread():
 
         gSheet = gspread.authorize(credentials)
 
-        log_event(txt="Loaded gSpread")
+        log_event(event_type=logging.INFO, event_details="Loaded gSpread")
 
     except Exception as error:
-        log_event(txt="ERROR: Couldnt load gSpread [{}]".format(error))
+        log_event(event_type=logging.ERROR, event_details="ERROR: Couldnt load gSpread [{}]".format(error))
 
 
 def find_extensions(folder):
@@ -55,7 +55,6 @@ def find_extensions(folder):
 setup_gSpread()
 
 # Discord setup
-logging.basicConfig(level=logging.INFO)
 client = commands.Bot(command_prefix='$')
 lastLoginTime = time.time()
 
@@ -64,7 +63,7 @@ lastLoginTime = time.time()
 
 @client.event
 async def on_ready():
-    log_event(txt='We have logged in as {0.user}, setup complete'.format(client))
+    log_event(event_type=logging.INFO, event_details='We have logged in as {0.user}, setup complete'.format(client))
 
 
 @client.event
@@ -73,7 +72,7 @@ async def on_message(msg):
 
     ## Check if gSpread token has expired, reload
     if credentials.access_token_expired:
-        log_event(txt="GSheets Token expired. Last login at {}".format(lastLoginTime))
+        log_event(event_type=logging.INFO, event_details="GSheets Token expired. Last login at {}".format(lastLoginTime))
         gSheet.login()
         lastLoginTime = time.time()
 

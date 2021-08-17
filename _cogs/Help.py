@@ -1,4 +1,5 @@
 ## Help adn Info Commands for Red Bot
+from logging import INFO, DEBUG
 
 from discord.ext import commands
 
@@ -15,23 +16,22 @@ class Help(commands.Cog):
         self.helpContents = f.read()
 
         if self.helpContents == "":
-            log_event(txt="No Help File Found. Created Empty One")
+            log_event(event_type=INFO, event_details="No Help File Found. Created Empty One")
 
         f.close()
 
     def set_refs(self, logger, sheets):
-        self.logs = logger
         self.gsheet = sheets
 
     # COMMAND: $help
 
     @commands.command()
     async def help(self, context):
-        self.logs.log("'$help' command called")
+        log_event(event_type=DEBUG, event_details="'$help' command called")
 
         await context.message.channel.send(self.helpContents)
 
-        self.logs.log("Command Succesfull")
+        log_event(event_type=DEBUG, event_details="Command Succesfull")
 
 
 def setup(client):
