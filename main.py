@@ -79,7 +79,7 @@ async def on_message(msg):
     await client.process_commands(msg)
 
 
-if __name__ == '__main__':
+def main():
     global gSheets
 
     client.remove_command("help")
@@ -110,3 +110,7 @@ if __name__ == '__main__':
         config = configparser.RawConfigParser(allow_no_value=True)
         config.read_string(file.read())
     client.run(config.get('discord', 'token'))
+
+
+if __name__ == '__main__':
+    main()
