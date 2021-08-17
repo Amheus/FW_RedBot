@@ -9,7 +9,7 @@ class Help(commands.Cog):
 		self.client = client
     
 		# Get help File
-		f = open('HELP.info', 'r+')
+		f = open('HELP.md', 'r+')
 		self.helpContents = f.read()
 
 		if self.helpContents == "":
