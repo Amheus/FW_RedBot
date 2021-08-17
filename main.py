@@ -9,6 +9,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 from cogs.games import Games
 from cogs.polling import Polling
+from cogs.utility import Utility
 from helpers import log_event
 
 log_event(level=logging.INFO, details="---------------------- Starting Up ----------------------")
@@ -90,6 +91,7 @@ def main():
         config.read_string(file.read())
 
     client.add_cog(Games())
+    client.add_cog(Utility())
     client.add_cog(Polling())
     client.run(config.get('discord', 'token'))
 
