@@ -1,7 +1,7 @@
 ## Games and Fun Commands for Red Bot
 
 import random
-from logging import ERROR, INFO
+from logging import ERROR, INFO, DEBUG
 
 from discord.ext import commands
 
@@ -12,7 +12,7 @@ class Games(commands.Cog):
 
     @commands.command()
     async def dice(self, context, number_of_sides: str):
-        log_event(details="'$dice' command called")
+        log_event(level=DEBUG, details="'$dice' command called")
 
         message_instance = await context.message.channel.send(content='Rolling the die, clickety clack...')
         failed: bool = False
