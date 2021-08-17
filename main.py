@@ -8,6 +8,7 @@ from discord.ext import commands
 from oauth2client.service_account import ServiceAccountCredentials
 
 from cogs.games import Games
+from cogs.polling import Polling
 from helpers import log_event
 
 log_event(level=logging.INFO, details="---------------------- Starting Up ----------------------")
@@ -88,7 +89,8 @@ def main():
         config = configparser.RawConfigParser(allow_no_value=True)
         config.read_string(file.read())
 
-    client.add_cog(Games(client=client, sheets=gSheet))
+    client.add_cog(Games())
+    client.add_cog(Polling())
     client.run(config.get('discord', 'token'))
 
 

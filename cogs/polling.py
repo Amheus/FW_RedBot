@@ -1,5 +1,6 @@
-## Poll Commands for Red Bot
-from logging import INFO, ERROR, DEBUG
+## Games and Fun Commands for Red Bot
+
+from logging import ERROR, DEBUG
 import discord
 from discord.ext import commands
 from helpers import log_event
@@ -7,13 +8,10 @@ import string
 from unicodedata import *
 
 
+emoji_letters = list((lookup(f'REGIONAL INDICATOR SYMBOL LETTER {letter}')) for letter in string.ascii_uppercase)
+
+
 class Polling(commands.Cog):
-    emoji_letters = list((lookup(f'REGIONAL INDICATOR SYMBOL LETTER {letter}')) for letter in string.ascii_uppercase)
-
-    def __init__(self, client):
-        self.client = client
-
-    # COMMAND: $poll <question> OR $poll {<question>} [<itemA>] [<itemB>] [<itemC>] ...
 
     @commands.command()
     async def poll(self, context):
@@ -65,7 +63,7 @@ class Polling(commands.Cog):
                             log_event(level=ERROR, details="Command Failed, Too many Options")
                             return
                         elif not i == len(option) - 1:
-                            pollMessage = pollMessage + "\n\n" + self.emoji_letters[i] + " " + choice
+                            pollMessage = pollMessage + "\n\n" + emoji_letters[i] + " " + choice
                     i += 1
 
                 e = discord.Embed(title="**" + title + "**",
@@ -77,14 +75,10 @@ class Polling(commands.Cog):
                 for choice in option:
                     if not i == len(option) - 1 and not option[i] == "":
                         final_options.append(choice)
-                        await pollMessage.add_reaction(self.emoji_letters[i])
+                        await pollMessage.add_reaction(emoji_letters[i])
                     i += 1
                 log_event(level=DEBUG, details="Command Succesfull")
             except Exception as error:
                 log_event(level=ERROR, details="Command Failed, Incorrect Format [{error}]")
                 await msg.channel.send(
                     "Please make sure you are using the format **'$poll {<question>} [<itemA>] [<itemB>] [<itemC>]'**")
-
-
-def setup(client):
-    client.add_cog(Polling(client))
