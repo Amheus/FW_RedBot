@@ -1,40 +1,14 @@
 ## Poll Commands for Red Bot
 from logging import INFO, ERROR, DEBUG
-
 import discord
 from discord.ext import commands
-
 from helpers import log_event
+import string
+from unicodedata import *
 
 
 class Polling(commands.Cog):
-    emojiLetters = [
-        "\N{REGIONAL INDICATOR SYMBOL LETTER A}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER B}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER C}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER D}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER E}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER F}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER G}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER H}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER I}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER J}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER K}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER L}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER M}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER N}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER O}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER P}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER Q}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER R}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER S}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER T}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER U}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER V}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER W}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER X}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER Y}",
-        "\N{REGIONAL INDICATOR SYMBOL LETTER Z}"]
+    emoji_letters = list((lookup(f'REGIONAL INDICATOR SYMBOL LETTER {letter}')) for letter in string.ascii_uppercase)
 
     def __init__(self, client):
         self.client = client
@@ -91,7 +65,7 @@ class Polling(commands.Cog):
                             log_event(level=ERROR, details="Command Failed, Too many Options")
                             return
                         elif not i == len(option) - 1:
-                            pollMessage = pollMessage + "\n\n" + self.emojiLetters[i] + " " + choice
+                            pollMessage = pollMessage + "\n\n" + self.emoji_letters[i] + " " + choice
                     i += 1
 
                 e = discord.Embed(title="**" + title + "**",
@@ -103,7 +77,7 @@ class Polling(commands.Cog):
                 for choice in option:
                     if not i == len(option) - 1 and not option[i] == "":
                         final_options.append(choice)
-                        await pollMessage.add_reaction(self.emojiLetters[i])
+                        await pollMessage.add_reaction(self.emoji_letters[i])
                     i += 1
                 log_event(level=DEBUG, details="Command Succesfull")
             except Exception as error:
