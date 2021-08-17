@@ -7,10 +7,10 @@ import gspread
 from discord.ext import commands
 from oauth2client.service_account import ServiceAccountCredentials
 
-from logger import logger
+from cogs.games import Games
+from helpers import log_event
 
-logs = logger()
-logs.log("---------------------- Starting Up ----------------------")
+log_event(txt="---------------------- Starting Up ----------------------")
 
 # Gspread variables
 scope = ['https://spreadsheets.google.com/feeds',
@@ -32,10 +32,10 @@ def setup_gSpread():
 
         gSheet = gspread.authorize(credentials)
 
-        logs.log("Loaded gSpread")
+        log_event(txt="Loaded gSpread")
 
     except Exception as error:
-        logs.log("ERROR: Couldnt load gSpread [{}]".format(error))
+        log_event(txt="ERROR: Couldnt load gSpread [{}]".format(error))
 
 
 def find_extensions(folder):
@@ -64,7 +64,7 @@ lastLoginTime = time.time()
 
 @client.event
 async def on_ready():
-    logs.log('We have logged in as {0.user}, setup complete'.format(client))
+    log_event(txt='We have logged in as {0.user}, setup complete'.format(client))
 
 
 @client.event
@@ -73,7 +73,7 @@ async def on_message(msg):
 
     ## Check if gSpread token has expired, reload
     if credentials.access_token_expired:
-        logs.log("GSheets Token expired. Last login at {}".format(lastLoginTime))
+        log_event(txt="GSheets Token expired. Last login at {}".format(lastLoginTime))
         gSheet.login()
         lastLoginTime = time.time()
 
@@ -85,31 +85,11 @@ def main():
 
     client.remove_command("help")
 
-    exts = find_extensions("./cogs")
-
-    for extension in exts:
-
-        # load each extension
-        try:
-            client.load_extension('cogs.' + extension)
-            logs.log('Loaded {} cog'.format(extension))
-        except Exception as error:
-            logs.log("ERROR: Extension {} could not be loaded. [{}]".format(extension, error))
-
-        # pass each cog the logger
-        try:
-            cog = client.get_cog(extension)
-            cog.set_refs(logs, gSheet)
-
-            for i in cog.get_commands():
-                logs.log("Created Command " + i.name)
-
-        except Exception as error:
-            logs.log("ERROR: Could not pass the extension {} the logger. [{}]".format(extension, error))
-
     with open("config.ini") as file:
         config = configparser.RawConfigParser(allow_no_value=True)
         config.read_string(file.read())
+
+    client.add_cog(Games(client=client, sheets=gSheet))
     client.run(config.get('discord', 'token'))
 
 

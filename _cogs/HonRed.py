@@ -5,6 +5,8 @@ import datetime
 import discord
 from discord.ext import commands
 
+from helpers import log_event
+
 
 class HonRed(commands.Cog):
 
@@ -12,7 +14,6 @@ class HonRed(commands.Cog):
         self.client = client
 
     def set_refs(self, logger, sheets):
-        self.logs = logger
         self.gsheet = sheets
 
         self.honSheetMain = self.gsheet.open("Honarary Red Tracking").worksheet("BOT_DATA")
@@ -23,7 +24,7 @@ class HonRed(commands.Cog):
 
     @commands.command()
     async def honstatus(self, context):
-        self.logs.log("'$honstatus' command called")
+        log_event(txt="'$honstatus' command called")
 
         msg = context.message
 
@@ -48,7 +49,7 @@ class HonRed(commands.Cog):
         if not found:
             await msgOut.edit(
                 content="I couldn't find you! You're not on my spreadsheet (if this is the case, contact a premier) or you got your username wrong!")
-            self.logs.log("Command failed, couldnt find user")
+            log_event(txt="Command failed, couldnt find user")
 
         if found:
             ## GET CELL VALUES (indices start at 1)
@@ -57,7 +58,7 @@ class HonRed(commands.Cog):
             Voteing = self.honSheetMain.cell(userRow + 1, 5).value
             Test = self.honSheetMain.cell(userRow + 1, 6).value
 
-            self.logs.log("Collected Cell Values")
+            log_event(txt="Collected Cell Values")
 
             ## FORMAT MESSAGE
 
@@ -91,7 +92,7 @@ class HonRed(commands.Cog):
 
             ## SEND MESSAGE
             await msgOut.edit(content='', embed=embed)
-            self.logs.log("Command Succesfull")
+            log_event(txt="Command Succesfull")
 
     # COMMAND: $honupdate <username> <requirement>
 
@@ -101,7 +102,7 @@ class HonRed(commands.Cog):
         msg = context.message
 
         if msg.channel.name == "honorary-red-logging":
-            self.logs.log("'$honupdate' command called")
+            log_event(txt="'$honupdate' command called")
 
             msgOut = await msg.channel.send('Adding to update list...')
 
@@ -127,7 +128,7 @@ class HonRed(commands.Cog):
             if not found:
                 await msgOut.edit(
                     content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
-                self.logs.log("Command failed, couldnt find user")
+                log_event(txt="Command failed, couldnt find user")
 
             if found:
                 ## SET CELLS
@@ -139,14 +140,14 @@ class HonRed(commands.Cog):
                 ## SEND CONFIRMATION
                 await msgOut.edit(
                     content="**The update request has been recieved**, the Minister for Personell will update the spreadhseet soon!")
-                self.logs.log("Command Succesfull")
+                log_event(txt="Command Succesfull")
 
     # COMMAND: $honregister <username>
 
     @commands.command()
     async def honregister(self, context):
 
-        self.logs.log("'$honregister' command called")
+        log_event(txt="'$honregister' command called")
 
         msg = context.message
 
@@ -172,7 +173,7 @@ class HonRed(commands.Cog):
         if not found:
             await msgOut.edit(
                 content="**I couldn't find a gap in the spreadsheet**, please let the Minister for Personell know about this!")
-            self.logs.log("Command failed, couldnt find user")
+            log_event(txt="Command failed, couldnt find user")
 
         if found:
             ## SET CELLS
@@ -182,7 +183,7 @@ class HonRed(commands.Cog):
             ## SEND CONFIRMATION
             await msgOut.edit(
                 content="**Your registration request has been recieved**, the Minsister for Personell will add you to the spreadsheet soon!")
-            self.logs.log("Command Succesfull")
+            log_event(txt="Command Succesfull")
 
 
 def setup(client):

@@ -3,6 +3,8 @@
 import discord
 from discord.ext import commands
 
+from helpers import log_event
+
 
 class Polling(commands.Cog):
     emojiLetters = [
@@ -36,14 +38,11 @@ class Polling(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    def set_refs(self, logger, sheets):
-        self.logs = logger
-
     # COMMAND: $poll <question> OR $poll {<question>} [<itemA>] [<itemB>] [<itemC>] ...
 
     @commands.command()
     async def poll(self, context):
-        self.logs.log("'$poll' command called")
+        log_event(txt="'$poll' command called")
 
         msg = context.message
 
@@ -88,7 +87,7 @@ class Polling(commands.Cog):
                     if not option[i] == "":
                         if len(option) > 20:
                             await msg.channel.send("Maximum of 20 options")
-                            self.logs.log("Command Failed, Too many Options")
+                            log_event(txt="Command Failed, Too many Options")
                             return
                         elif not i == len(option) - 1:
                             pollMessage = pollMessage + "\n\n" + self.emojiLetters[i] + " " + choice
@@ -105,9 +104,9 @@ class Polling(commands.Cog):
                         final_options.append(choice)
                         await pollMessage.add_reaction(self.emojiLetters[i])
                     i += 1
-                self.logs.log("Command Succesfull")
+                log_event(txt="Command Succesfull")
             except Exception as error:
-                self.logs.log("Command Failed, Incorrect Format [{error}]")
+                log_event(txt="Command Failed, Incorrect Format [{error}]")
                 await msg.channel.send(
                     "Please make sure you are using the format **'$poll {<question>} [<itemA>] [<itemB>] [<itemC>]'**")
 

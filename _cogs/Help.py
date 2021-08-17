@@ -2,6 +2,8 @@
 
 from discord.ext import commands
 
+from helpers import log_event
+
 
 class Help(commands.Cog):
 
@@ -13,7 +15,7 @@ class Help(commands.Cog):
         self.helpContents = f.read()
 
         if self.helpContents == "":
-            log("No Help File Found. Created Empty One")
+            log_event(txt="No Help File Found. Created Empty One")
 
         f.close()
 
