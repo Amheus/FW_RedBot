@@ -1,3 +1,4 @@
+import configparser
 import os
 import discord
 from logger import logger
@@ -9,17 +10,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 logs = logger()
 logs.log("---------------------- Starting Up ----------------------")
-
-# Load Discord Bot Token
-try:
-    tokenf = open("token.txt", "r")
-    TOKEN = tokenf.read()
-    tokenf.close()
-
-except Exception as error:
-    logs.log("ERROR: Couldn't load Token [{}]".format(error))
-
-logs.log("Loaded Discord Token: [{}]".format(TOKEN))
 
 # Gspread variables
 scope = ['https://spreadsheets.google.com/feeds',
@@ -116,4 +106,7 @@ if __name__ == '__main__':
         except Exception as error:
             logs.log("ERROR: Could not pass the extension {} the logger. [{}]".format(extension, error))
 
-    client.run(TOKEN)
+    with open("config.ini") as file:
+        config = configparser.RawConfigParser(allow_no_value=True)
+        config.read_string(file.read())
+    client.run(config.get('discord', 'token'))
